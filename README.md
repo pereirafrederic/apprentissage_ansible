@@ -28,24 +28,24 @@ ou en **yaml**
 ## inventory
 
 inventory file:
-web1.example.com
-web2.example.com
-192.0.2.42
+            web1.example.com
+            web2.example.com
+            192.0.2.42
 
 si tu veux grouper, un nom avec _ : 
-[group1]
-web1.example.com
-web2.example.com
+            [group1]
+            web1.example.com
+            web2.example.com
 
-[group2]
-web2.example.com
-192.0.2.42
+            [group2]
+            web2.example.com
+            192.0.2.42
 
 tu peux faire des groupes de groupes:
 avec :
-[group_couple:childen]
-groupe1
-groupe2
+            [group_couple:childen]
+            groupe1
+            groupe2
 
 
 
@@ -54,13 +54,14 @@ all inclue every host in the inventoryun
 ungrouped unclue tout les hosts qui ne sont dans aucun groupe que all
 
 
-on peut faire des ranges de hsts  avec [start:end]
-example : 192.168.[4:7].[0:255] pour dire tous les ips de :
-192.168.4....   192.168.6.... 192.168.7.... 192.168.8....
-192.168.X.0 192.168.X.1 192.168.X.2 ...... 192.168.X.255
+on peut faire des ranges de hsts  avec [start:end] 
+example :
+            192.168.[4:7].[0:255] pour dire tous les ips de :
+            192.168.4....   192.168.6.... 192.168.7.... 192.168.8....
+            192.168.X.0 192.168.X.1 192.168.X.2 ...... 192.168.X.255
 
 cela marche aussi avec des adress'es
-server[1:5].example.com
+            server[1:5].example.com
 
 
 le fichier de config ansible est :
@@ -76,8 +77,10 @@ sudo pour action admin
 ssh utilisé (config dans defaults section)
 
 basis section
-[default] sets default for ansible operation
-[priviliege_escalation] configure how ansible performs privilege escalation on managed hosts
+[default] 
+            sets default for ansible operation
+[priviliege_escalation] 
+            configure how ansible performs privilege escalation on managed hosts
 
 default =>
 * remote_user : utilisateur utilisé sur la machine managé
@@ -91,15 +94,15 @@ priviliege_escalation =>
 * become_ask_pass  mot de passe pour become_method (default is no)
 
 typiquement le ansible.cfg file:
-  [defaults]
-  inventory = ./inventory
-  remote_user = ansible
-  ask_pass = false
+            [defaults]
+            inventory = ./inventory
+            remote_user = ansible
+            ask_pass = false
 
-  [priviliege_escalation}
-  become = true
-  become_user = root
-  become_ask_pass = false
+            [priviliege_escalation]
+            become = true
+            become_user = root
+            become_ask_pass = false
   
 
 
@@ -119,8 +122,8 @@ arborescence HOST-BASED CONNECTION VARIABLE :
 ### ansible --version 
 il faut avoir un [default] section comme 
 
-[default]
-inventory = ./inventory
+            [default]
+            inventory = ./inventory
 
 sinon la location est celle par défaut : 
 /etc/ansible/hosts
