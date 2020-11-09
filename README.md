@@ -89,7 +89,7 @@ default =>
 
 priviliege_escalation => 
 * become : boolean   ???  (default is no)
-* become_user : quel utilisateur sur la machine ansible sera ????   (défault is root)
+* become_user : quel utilisateur sur la machine ansible sera celui qui donne privilege   (défault is root)
 * become_method : control comment ansible devient user (default sudo , mais ça pourrait être juste su)
 * become_ask_pass  mot de passe pour become_method (default is no)
 
@@ -115,7 +115,26 @@ arborescence HOST-BASED CONNECTION VARIABLE :
                 - server2.exmple
             - inventory
   
-  
+dans host_vars on peut spécifier des variables spécifique
+
+* ansible_host: ip address or hostname utilise pour la connnexion 
+* ansible_port : specifie le ssh port pour  ce host
+* ansible_user : utilisateur utilisé pour ce host
+* ansible_become : utilisateur utilise pour privilege excalation pour  ce host
+* ansible_become_method : specifie la method to use privilege escalation pour  ce host (sudo ou su etc...)
+
+
+
+exemple :
+host_vars/server1.exemple.com contient
+
+            #variable pour server1
+            ansible_host: 192.2.36.104
+            ansible_port: 34102
+            ansible_user: root
+            ansbile_become:false
+
+
 
 # commande :
 
