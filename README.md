@@ -134,6 +134,13 @@ host_vars/server1.exemple.com contient
             ansible_user: root
             ansbile_become:false
 
+# preparation managed Host
+
+* ssh key based auth 
+* specific account only for ansible use
+
+
+
 
 
 # commande :
@@ -148,6 +155,8 @@ sinon la location est celle par défaut :
 /etc/ansible/hosts
 
 
+
+
 ### ansible-inventory -y --list
 cela donne le resultat du current inventory en YAML
 
@@ -159,5 +168,18 @@ cela permet de recherche le host recherche
 ansible web1.example.com --list-hosts
 
 
+#### -k or --ask-passe 
+pour connection mdp
 
+#### -u remote_user 
+pour utiliser u user particulier
+
+#### -b 
+pour l"equivalend become=true
+
+#### -K o --ask-become-pass
+pour passer un password escalation
+
+#### --become-method 
+pour passer une methode autre que celle par défaut (sudo )
 
