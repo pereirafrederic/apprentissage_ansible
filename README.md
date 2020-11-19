@@ -578,3 +578,22 @@ ou pour les packages
                            
                          
                                  
+# conditional tasks 
+
+when:  condition
+
+si la variable est define:
+
+                        - name: test
+                          hosts: all
+                          vars:
+                            myservice: httpd
+                          tasks: 
+                            - name: "{{ myservice}} package is installed"
+                              yum:
+                                name: "{{ myservice }}"
+                              when:
+                                myservice is defined
+                                
+# ansible facts
+
