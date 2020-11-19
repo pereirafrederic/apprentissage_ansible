@@ -25,6 +25,10 @@ ou en **yaml**
                         web2.example.com: {}
                         192.0.2.42: {}
 
+# installation ansible
+
+yum ansible
+
 ## inventory
 
 inventory file:
