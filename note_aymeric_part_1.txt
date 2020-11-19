@@ -1,18 +1,20 @@
---config ansible
+-- installer ansible sur redhat (faire yes)
+yum install ansible
+
+-- config ansible
 vim /etc/ansible/ansible.cfg (config de l’inventory)
 Tout y est commenté par défaut (ce ont les valeurs par défaut). Les décommenter et les remplacer équivaut à un override.
 
---inventory par défaut
+-- inventory par défaut
 vim /etc/ansible/hosts
 
---pour consulter les hosts du fichier $fichier (on peut en effet créer n'impore où un fichier du type inventory
+-- pour consulter les hosts du fichier $fichier (on peut en effet créer n'importe où un fichier du type inventory 
+-- -i permet de consulter n’importe quel fichier (et pas celui par défaut /etc/ansible/hosts)
 ansible-inventory -i $fichier --list 
--i permet de consulter n’importe quel fichier (et pas celui par défaut /etc/ansible/hosts)
 
 ex en usine : 
---au format par défaut (ini)
+-- au format par défaut (ini) 
 ansible-inventory -i /home/adugast/inventory --list 
-
 {
     "_meta": {
         "hostvars": {
@@ -45,7 +47,7 @@ ansible-inventory -i /home/adugast/inventory --list
 }
 
 
---(format yaml)
+--(format yaml) -y permet de consulter au format yaml (pas de conversion du fichier source)
 ansible-inventory -y -i /home/adugast/inventory --list 
 
 all:
@@ -59,3 +61,57 @@ all:
       hosts:
         web01: {}
         web02: {}
+
+Pour la commande ansible --version
+ansible checke d'abord s'il existe une conf dans le dossier courant, puis dans le dossier de l'utilisateur courant puis dans la conf par défaut /etc/ansible
+
+Exemple pour pinger une machine avec ansible 
+On se limite aussi au group databases et à l’ip 172.25.1.65 (usine bdd)
+Ansible.cfg (/home/adugast)
+
+[defaults]
+inventory = /home/adugast/inventory
+
+[privilege_escalation]
+become=True
+become_method=sudo
+become_user=root
+become_ask_pass=False
+
+
+inventory (/home/adugast) : Des variables sont configurables pour chaque host. Ici, on souhaite se conencter au host en tant que adugast avec le password Dispo2016!@
+
+
+[webservers]
+web01
+web02
+
+[databases]
+db[01:02]
+172.25.[1:5].65 ansible_password=Dispo2016!@ ansible_user=adugast
+
+-- commande : (dans /home/adugast)
+ansible databases --limit 172.25.1.65 -m ping
+
+
+--lister les modules dispo ( | grep $search pour filtrer)
+ansible-doc -l
+ansible-doc -l | grep ping 
+
+-avoir la doc d'un module 
+ansible-doc $module
+
+-- créer un utilisateur jp sur la amchine 172.25.1.65
+ansible -m user -a 'name=jp uid=2500' 172.25.1.65
+
+-- supprimer un utilisateur jp sur la amchine 172.25.1.65
+ansible -m user -a 'name=jp uid=2500 state=absent' 172.25.1.65
+
+--effectuer une commande sur tous les hosts 
+ansible all -m $module
+
+--specifier un inventory 
+ansible $host -i $inventory -m $module
+
+--redemarrer un service $service sur tous les hosts
+ansible all -m service -a 'state=restarted name=sshd"
