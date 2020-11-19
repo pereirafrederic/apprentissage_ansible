@@ -235,6 +235,10 @@ restart le service sshd :
 
 creer un user :
                         ansible webservers -m user -a 'name=test password=secure_password state=present'
+                        ansible all -m user -a 'name=test2 groups=dev,wheel append=yes state=present'
+
+append=yes permet de garder les autres groups auquel il est rattaché, sinon ça garde que cette liste
+
 
 verifier :
                         ssh webservers
@@ -249,3 +253,50 @@ si on veut supprimer un user
 si on reverifie, il a disparu de la liste
 
 
+# module 
+
+* copy : copier un fichier de local vers host
+* file : set permission à un fichier
+* lineinfile: ajouter une ligne
+* synchronize: utilisation de rsync (voir )
+
+pour ajouter et controler module:
+* yum : manager using YUM
+* dnf : manager using DNF
+* gem : manger ruby GEMS
+
+system module ;
+* firewalld : port et service qui 
+* reboot : reboot une machine
+* service : manage service
+* user : manage user
+
+net tools module:
+get_url : download file
+nmcli : manage networking
+uri : interact with webservice and communicate APIs
+
+
+
+
+# module package
+                        ansible all -m package -a 'name=httpd state=present'
+                        ansible webservers -m  yum -a 'name=httpd state=present'
+                        
+                        
+                        
+# commandes
+
+* command : run a single commande on remote system
+* shell : run a a command on remote system's shell
+* raw : à pas utiliser , ça lance une command sans process
+
+exemple :
+                        * ansible myhost -m command -a /usr/bin/hostname
+                        * ansible localhost -m shell -a set
+                        
+                        
+# Ansible Playbooks                        
+
+
+                        
