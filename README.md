@@ -303,4 +303,278 @@ exemple :
 # Ansible Playbooks                        
 
 
+executer un playbook :
+                        ansible-playbook site.yml --limit wwebservers
                         
+valider  un playbook : 
+                        ansible-playbook --syntax-cheeck task.yml
+
+tester un playbook (dry run): 
+                        ansible-playbook -C tada.yml
+                        
+
+une playbook commence toujours par ---  qui donne le debut du fichier
+puis - name : dazdzadazdazdzadzadzadzad
+
+                        ---
+                        - name: dadadaadada
+                          hosts: all
+                          become: true
+
+                          tasks:
+                            - name: User get created
+                              user:
+                                name: test
+                                state: present
+        
+    
+# playbook variable
+
+règle du nommage de variable 
+* que des lettre, chiffre et underscore
+* pas de . ou $ ou d'espace ou -
+* commence par une lettre
+* separe mot par _
+
+# playbook scope
+
+global :
+* value  for all hosts
+* extra variable you set in the job templace
+
+host : 
+* value for a particular host or groups
+* variabe set for a host in inventory or **host_vars** directory
+
+play:
+* value for a playbook
+* variable directive in a play, **include_vars**tasks
+
+
+
+                        - host: all
+                          vars:
+                            user_name: joe
+                            user_state: present
+                            
+                        - host: all
+                          vars_files:
+                            - vars/users.yml
+
+## utilisation de la variable 
+
+                        - name: example 
+                          hosts: all
+                          vars:
+                            user_name: joe
+                          
+                          tasks:
+                          # this line will read : create a user joe
+                          - name: create a user {{ user_name }}
+                            user:
+                             # this line will ceate the user named joe
+                              name: "{{ user_name }}"
+                              state: present
+
+autres examples: 
+                        - systemd :
+                          name: {{ service }}
+                          
+                        ou 
+                        with_items:
+                          - "{{ list }}"
+                          
+group
+overide by host
+
+can de déclared:
+ * in inventory
+ * in **host_vars** ou **groups_vars**
+ 
+## arborescence 
+
+project
+            groups_vars
+                        all
+                        back
+                        front
+            host_vars
+                        demo.example.com
+                        demo2.example.com
+            playbook.yml
+            
+
+## install package
+            - name: install packages
+              hosts: all
+              vars:
+                package:
+                  - nmap
+                  - httpd
+                  - php
+                  - mod_php
+                  - mod_ssl
+
+              tasks:
+                - name: install software {{ packages }}
+                  yum:
+                    name: "{{ packages }}"
+                    state: present
+        
+        
+example avec user
+
+            vars:
+              users: 
+                henry:
+                  unanme: henry
+                  fname: henry
+                  lname: henry
+                  home: /home/henry
+                  shell: /bin/bash      
+                joe:
+                  unanme: joe
+                  fname: joe
+                  lname: joe
+                  home: /home/joe
+                  shell: /bin/bash
+
+## register statement
+
+* return value vary for each module
+* registrered variables are only stored in memory
+
+
+**-e** for override extra variable
+
+                        ansible-playbook -e "username=joe" example.yml
+                        
+cela remplace la vars username avec joe
+
+** utilise un objet 
+
+                         user:
+                           name: "{{ users['henry']['uname'] }}"
+                           comment: "{{ user }}"
+                           state: present
+                           
+si tu mets dans un fichier groups vars,
+                        users: 
+                            henry:
+                              unanme: henry
+                              fname: henry
+                              lname: henry
+                              home: /home/henry
+                              shell: /bin/bash      
+                            joe:
+                              unanme: joe
+                              fname: joe
+                              lname: joe
+                              home: /home/joe
+                              shell: /bin/bash
+                              
+                              
+ il va prendre les variable automatiquement du playbook vers group_vars ou _host_vars
+
+## vault senstive 
+
+
+ENCRYPTED FILE:
+* ansible-vault create filename
+* ansible-vault view filename
+* ansible-vault edit filename
+
+encrypt existing file:
+* ansible-vault encrypt filename
+
+save avec --output=new_filename
+
+decrypt file:
+* ansible-vault decrypt filename
+
+# provide vault password
+* ansible-playbook --vault-id @prompt filename
+
+@prompt option will prompt the user for the ansible vault password, sinon cela retour une erreur
+cela va afficher le mdp à saisir
+
+### multiple password
+* ansible-vault encrypt filename --vault-id vars@prompt
+
+avec playbook:
+ansible-playbook --vault-id vars@prompt --vault-id playbook@prompt site.yml
+
+une mdp pour le fault , un autre mdp pour le playbook
+
+cela va demander le mdp vault
+ansible-playbook --ask-vault-pass test.yml
+
+# output task
+
+ne pas avoir l'objet de sortie, pour pas afficher mdp
+
+                        - name : adadadadad
+                          debug:
+                            msg: "{{ secret }}"
+                          no_log: true  
+                          
+
+no_log: true 
+
+
+
+# loops
+
+use loop
+
+                        - name: loop user
+                          hosts: all
+                          vars:
+                            mysusers:
+                              - jeo
+                              - barnabe
+                              - carla
+                          
+                          tasks:
+                            - name: create user
+                            user:
+                              name: "{{ item }}"
+                              state: present
+                            loop: "{{ myusers }}"
+
+create user in groups
+
+                        ---
+                        - name: create user in appriopriate group
+                          hosts: all
+                          tasks:
+                          
+                            - name: create groups
+                              group:
+                                name:"{{ item }}"
+                              loop
+                                - admin
+                                - dev
+                            
+                            - name: create user in groupz
+                              user:
+                               name: "{{ item.name }}"
+                               groups: "{{ item.groups }}"
+                               **with_dict**:
+                                 - { name: 'fred', groups: "admin,dev" }
+                                 - { name: 'henry', groups: "admin" }
+                                 - { name: 'seb', groups: "dev" }
+                                 
+ou pour les packages
+
+                        - name: install packages
+                          yum:
+                            name: "{{ item }}"
+                            state: present
+                          loop:
+                            - ngnix
+                            - postgresql
+                            - postgresql-server
+                           
+                         
+                                 
