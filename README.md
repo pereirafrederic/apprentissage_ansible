@@ -164,8 +164,8 @@ tu dois spécifié host-pattern
 cela donne :  ansible host-pattern -m module -a %module argument% -i inventory
 
 exemple de ad hoc commande :
-* ansible all -m ping
-* ansible -m user -a 'name=newbie uid=4000 state=present'
+            * ansible all -m ping
+            * ansible -m user -a 'name=newbie uid=4000 state=present'
 
 pour specifier un mdp , on utilise -k ou --ask-pass
 pour spécifier un user, on utilise -u remot_user 
@@ -185,7 +185,7 @@ donne un fichier json de l'inventory
 
 ### ansible %host recherche% --list-hosts
 cela permet de recherche le host recherche 
-ansible web1.example.com --list-hosts
+                        ansible web1.example.com --list-hosts
 
 
 #### -k or --ask-passe 
@@ -208,17 +208,44 @@ pour passer une methode autre que celle par défaut (sudo )
 # documentation
 
 obtenir la liste des docs:
-* ansible-doc -l  - 
+                        * ansible-doc -l 
+                        * ansible-doc -l | grep service
 
 pour obtenir la doc précise (exemple : ping) :
-* ansible-doc ping  
+                        * ansible-doc -m ping  
+                        * ansible-doc -m service
+                        * ansible-doc -m user
 
 obtenir les infos de base:
-* ansible --version
+            * ansible --version
 
 voir le fichier de config: 
-cat ansible.cfg
+                        cat ansible.cfg
 
 voir l'inventory :
-cat inventory
+                        cat inventory
+
+commande ping limité:
+                        ansible all --limit web01 -i inventory -k -m ping
+cela te donne le ssh password
+cela te donne le ping de web01
+
+restart le service sshd :
+                        ansible all -m service -a 'state=restart name=sshd'
+
+creer un user :
+                        ansible webservers -m user -a 'name=test password=secure_password state=present'
+
+verifier :
+                        ssh webservers
+                        tail /etc/passwd
+
+on retrouve une ligne pour test
+
+
+si on veut supprimer un user 
+                        ansible webservers -m user -a 'name=test password=secure_password state=absent'
+
+si on reverifie, il a disparu de la liste
+
 
