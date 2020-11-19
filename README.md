@@ -597,3 +597,136 @@ si la variable est define:
                                 
 # ansible facts
 
+                        - name: condition in
+                          hosts: all
+                          gather_facts: yes
+                          become: yes
+                          vars:
+                            myservice: httpd
+                            supported_os:
+                              - RedHat
+                              - Fedora
+                          tasks: 
+                            - name: install "{{ myservice }}"
+                              yum:
+                                name: "{{ myservice }}"
+                                state: present
+                              when: ansible_facts['distribution'] in suported_os
+
+on peut recuperer les facts de ansible pour récupere les distirbutions supported
+
+il ya directement
+* ansible_distribution                "Fedora" ou "RedHat'
+* ansible_distribution_version        "7.5"
+* ansible_kermel                      "3.10.0-327.el7.x86_64"
+
+
+classique condition link:
+* or
+* and
+* > ( ) AND ( ( ) OR () )
+*  (
+
+avec 
+    when : 
+      - condition1
+      - condition2
+      
+revient à faire un conditon1 AND condition2
+
+on peut utilise item d'une loop
+
+
+## register
+
+                        - name: test
+                          hosts: all
+                          tasks: 
+                            - name: get postfix
+                              command: /usr/bin/systemctl is-active postfix
+                              ignore_errors: yes
+                              register: result
+                              
+                            - name: restart apache httpd
+                              service:
+                                name: httpd
+                                state: restarted
+                              when result.rc == 0
+                              
+# case
+
+groups: 
+
+when : "'database' in **groups_name**"
+cela fera que si on est dans le [database] group dans inventory
+
+
+# ansible handler
+
+                        tasks: 
+                          - name: copy files
+                            template:
+                              src: /vars/file
+                              dest: /etc/httpd/conf.d/file
+                            notify: 
+                              - restart apache
+                              - restart mysql
+                        
+                        handlers:
+                          - name: restart apache
+                            service:
+                              name: httpd
+                              state: restart
+                              
+                          - name: restart mysql
+                            service: 
+                              name: mariadb                              
+                              state: restart
+
+cela se déclenche uniquement si ya un changed (couleur orange)
+
+
+ ## reboot in handler
+ 
+ handlers: 
+   - name: reboot system
+     reboot:
+     
+     
+par exemple cela reboot juste db01 car c'est le seul à avoir changé
+
+# ansible block and rescue and always
+
+permet de mettre une condition sur un block d'action
+
+## block
+
+- name: block exemple
+  hosts: all
+  tasks:
+    - name: two task in one block
+      block: 
+        - name: installation
+  
+        - name: creation
+ 
+      when:  true
+      
+
+## rescue
+
+si le block fail, on execute la partie rescue
+
+## always
+
+peut importe le resultat , on fait la tache définie dans le always
+
+
+exemple: 
+
+block fait l'update databse
+rescue fait un revert database
+always fait le redemarrage
+  
+   
+ 
