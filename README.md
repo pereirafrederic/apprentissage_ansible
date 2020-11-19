@@ -729,4 +729,12 @@ rescue fait un revert database
 always fait le redemarrage
   
    
+  
+# log
+
+pour logger 
+
+- name : installation 
+  debug:
+    msg: "installation en cours..."
  
