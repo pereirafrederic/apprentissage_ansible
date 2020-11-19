@@ -1,0 +1,61 @@
+--config ansible
+vim /etc/ansible/ansible.cfg (config de l’inventory)
+Tout y est commenté par défaut (ce ont les valeurs par défaut). Les décommenter et les remplacer équivaut à un override.
+
+--inventory par défaut
+vim /etc/ansible/hosts
+
+--pour consulter les hosts du fichier $fichier (on peut en effet créer n'impore où un fichier du type inventory
+ansible-inventory -i $fichier --list 
+-i permet de consulter n’importe quel fichier (et pas celui par défaut /etc/ansible/hosts)
+
+ex en usine : 
+--au format par défaut (ini)
+ansible-inventory -i /home/adugast/inventory --list 
+
+{
+    "_meta": {
+        "hostvars": {
+            "db01": {},
+            "db02": {},
+            "web01": {},
+            "web02": {}
+        }
+    },
+    "all": {
+        "children": [
+            "databases",
+            "ungrouped",
+            "webservers"
+        ]
+    },
+    "databases": {
+        "hosts": [
+            "db01",
+            "db02"
+        ]
+    },
+    "ungrouped": {},
+    "webservers": {
+        "hosts": [
+            "web01",
+            "web02"
+        ]
+    }
+}
+
+
+--(format yaml)
+ansible-inventory -y -i /home/adugast/inventory --list 
+
+all:
+  children:
+    databases:
+      hosts:
+        db01: {}
+        db02: {}
+    ungrouped: {}
+    webservers:
+      hosts:
+        web01: {}
+        web02: {}
