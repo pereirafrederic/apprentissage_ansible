@@ -154,6 +154,26 @@ il faut avoir un [default] section comme
 sinon la location est celle par défaut : 
 /etc/ansible/hosts
 
+# ad hoc commande
+
+débute par ansible  
+tu dois spécifié host-pattern
+-m pour les options que le module ansible doit lancer
+-a pour les arguments obligatoire pour le module
+
+cela donne :  ansible host-pattern -m module -a %module argument% -i inventory
+
+exemple de ad hoc commande :
+* ansible all -m ping
+* ansible -m user -a 'name=newbie uid=4000 state=present'
+
+pour specifier un mdp , on utilise -k ou --ask-pass
+pour spécifier un user, on utilise -u remot_user 
+pour enable privilege escalation , on utilise -b équivalent become:yes
+pour spécifier le mdp de l'escalation, on utilie le grand -K ou --ask-become-pass
+pour spécifier la méthode d'escalation, on utilise --become-method  (défault = sudo)
+
+
 
 
 
@@ -182,4 +202,23 @@ pour passer un password escalation
 
 #### --become-method 
 pour passer une methode autre que celle par défaut (sudo )
+
+
+
+# documentation
+
+obtenir la liste des docs:
+* ansible-doc -l  - 
+
+pour obtenir la doc précise (exemple : ping) :
+* ansible-doc ping  
+
+obtenir les infos de base:
+* ansible --version
+
+voir le fichier de config: 
+cat ansible.cfg
+
+voir l'inventory :
+cat inventory
 
