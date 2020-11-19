@@ -688,10 +688,10 @@ cela se déclenche uniquement si ya un changed (couleur orange)
 
  ## reboot in handler
  
- handlers: 
-   - name: reboot system
-     reboot:
-     
+             handlers: 
+               - name: reboot system
+                 reboot:
+
      
 par exemple cela reboot juste db01 car c'est le seul à avoir changé
 
@@ -701,16 +701,16 @@ permet de mettre une condition sur un block d'action
 
 ## block
 
-- name: block exemple
-  hosts: all
-  tasks:
-    - name: two task in one block
-      block: 
-        - name: installation
-  
-        - name: creation
- 
-      when:  true
+                        - name: block exemple
+                          hosts: all
+                          tasks:
+                            - name: two task in one block
+                              block: 
+                                - name: installation
+
+                                - name: creation
+
+                              when:  true
       
 
 ## rescue
@@ -734,7 +734,7 @@ always fait le redemarrage
 
 pour logger 
 
-- name : installation 
-  debug:
-    msg: "installation en cours..."
- 
+                        - name : installation 
+                          debug:
+                            msg: "installation en cours..."
+
