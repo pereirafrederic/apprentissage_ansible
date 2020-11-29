@@ -728,8 +728,33 @@ block fait l'update databse
 rescue fait un revert database
 always fait le redemarrage
   
-   
-  
+# template
+
+
+                        - name: use template
+                          template: src=templates/ngnix.conf.j2 dest=/etc/ngnix/sites-available/demo mode=0664
+
+# lineinfile
+
+                        
+# wait_for
+
+                        ---
+                        - hosts: weberver
+                          become: true                                              
+                          tasks:
+                            - name: verify ngnix status
+                              command: service ngnix status
+                              
+                            - name: verify ngnix is not listening on port 80  
+                              wait_for: port=80 timeout=1 {state}
+{state} valeurs possible
+stopped
+started => par défault, si tu met rien c'est ça
+
+pour un load balancer
+drained 
+
 # log
 
 pour logger 
